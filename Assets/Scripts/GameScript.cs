@@ -19,6 +19,7 @@ namespace Tamarin_Battle
 
         private void Start()
         {
+            stat_reset();
             change_stat();
             make_deck();
         }
@@ -50,9 +51,11 @@ namespace Tamarin_Battle
 
         public IEnumerator next_round()
         {
-            yield return new WaitForSeconds(3f);
+            change_stat();
+            yield return new WaitForSeconds(5f);
             stat_reset();
             change_stat();
+            make_deck();
         }
 
         public void stat_reset()
@@ -61,6 +64,8 @@ namespace Tamarin_Battle
             enemy.damage = 0f;
             player.shield = 0f;
             enemy.shield = 0f;
+            player.power_stat.text = "0";
+            enemy.power_stat.text = "0";
         }
 
         public void change_stat()
@@ -76,10 +81,8 @@ namespace Tamarin_Battle
 
             
             player.health_stat.value = player.health;
-            player.shield_stat.text = player.shield + "";
-            enemy.health_stat.value = enemy.health;
-            enemy.shield_stat.text = enemy.shield + "";
-
+            enemy.health_stat.value = enemy.health; 
+            
             
         }
 
@@ -89,6 +92,24 @@ namespace Tamarin_Battle
             clean(cardhold2);
             GameObject c1 =  Instantiate(card, cardhold1.transform);
             GameObject c2 =  Instantiate(card, cardhold2.transform);
+
+            if(turn % 2 == 0)
+            {
+                c1.GetComponent<Card>().current = player;
+                c2.GetComponent<Card>().current = player;
+                c1.GetComponent<Card>().next = enemy;
+                c2.GetComponent<Card>().next = enemy;
+
+            }
+            else
+            {
+                c1.GetComponent<Card>().current = enemy;
+                c2.GetComponent<Card>().current = enemy;
+                c1.GetComponent<Card>().next = player;
+                c2.GetComponent<Card>().next = player;
+            }
+
+
             type1.text = c1.GetComponentInChildren<Card>().type + "";
             type2.text = c2.GetComponentInChildren<Card>().type + "";
         }

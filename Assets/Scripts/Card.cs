@@ -13,11 +13,12 @@ namespace Tamarin_Battle
 {
     public class Card : MonoBehaviour
     {
-        private bool clicked = false;
+        private bool clicked = true;
         public Power type { get; private set; }
         private float power_value;
         private GameScript manager;
-        private Player current,next;
+        [HideInInspector]
+        public Player current,next;
         private void Awake()
         {
             power_value = Random.Range(20, 31);
@@ -28,7 +29,13 @@ namespace Tamarin_Battle
 
         private void Start()
         {
-            
+            StartCoroutine("clickable");
+        }
+
+        IEnumerator clickable()
+        {
+            yield return new WaitForSeconds(1.5f);
+            clicked = false;
         }
 
 
@@ -37,16 +44,6 @@ namespace Tamarin_Battle
             if (!clicked)
             {
                 clicked = true;
-                if(GameScript.turn % 2 == 0)
-            {
-                    current = manager.player;
-                    next = manager.enemy;
-                }
-            else
-                {
-                    current = manager.enemy;
-                    next = manager.player;
-                }
                 switch (type)
                 {
                     case Power.ATTACK:
@@ -54,18 +51,19 @@ namespace Tamarin_Battle
                         break;
                     case Power.DEFENSE:
                         current.shield = power_value;
-
                         break;
                 }
-                current.shield_stat.text = power_value + "";
+                current.power_stat.text = power_value + "";
                 print($"{GameScript.turn} {current.gameObject.tag} {type} {next.gameObject.tag} {power_value}");
 
 
                 GameScript.turn++;
-                manager.make_deck();
-                if (GameScript.turn > 1 && (GameScript.turn % 2 == 0))
+                if(GameScript.turn % 2 == 1)
                 {
-                    manager.change_stat();
+                    manager.make_deck();
+                }
+                if (GameScript.turn > 1 && (GameScript.turn % 2 == 0))
+                { 
                     manager.StartCoroutine("next_round");
                 }
             }

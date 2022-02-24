@@ -11,7 +11,7 @@ namespace Tamarin_Battle
         public float health = 100f;
         public float shield = 0f;
         public float damage = 0f;
-        public Text shield_stat;
+        public Text power_stat;
         public Slider health_stat;
 
 
